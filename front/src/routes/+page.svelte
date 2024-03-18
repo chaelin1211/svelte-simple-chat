@@ -12,7 +12,6 @@
   let messages = [];
 
   socket.on("message", (message) => {
-    console.log(message);
     messages = [...messages, message];
   });
 
@@ -22,6 +21,11 @@
 
   function sendMessage(name, message) {
     socket.emit("message", { name, message });
+    resetMessage();
+  }
+
+  function resetMessage() {
+    message = "";
   }
 
   onMount(() => {

@@ -17,19 +17,24 @@ const server = app.listen(3000, () => {
 });
 
 const io = socketIo(server, { cors: { origin: "http://localhost:5173" } }); // Set CORS for Socket.IO
-let connectors = 0;
 
+const users = {};
 io.on("connection", (socket) => {
-  console.log("connected: " + socket.id);
-  let name = "";
-  connectors++;
-  socket.on("message", ({ name, message }) => {
-    io.emit("message", name + ": " + message);
+  socket.on("init", ({ name }) => {
+    users[socket.id] = name;
+    if (!!name) {
+      io.emit("connected", { name });
+    }
+  });
+
+  socket.on("message", (message) => {
+    io.emit("message", users[socket.id] + ": " + message);
   });
 
   socket.on("disconnect", () => {
-    console.log("disconnected: " + socket.id);
-    io.emit("disconnected", { connectors, name });
-    connectors--;
+    let name = users[socket.id];
+    if (!!name) {
+      io.emit("disconnected", { name });
+    }
   });
 });

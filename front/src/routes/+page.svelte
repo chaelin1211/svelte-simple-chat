@@ -1,8 +1,8 @@
 <script>
   import ioClient from "socket.io-client";
-  import { name } from "../store.js";
-  import { goto } from "$app/navigation";
-  import { onMount } from "svelte";
+  import {name} from "../store.js";
+  import {goto} from "$app/navigation";
+  import {onMount} from "svelte";
 
   const ENDPOINT = "http://localhost:3000";
 
@@ -15,12 +15,19 @@
     messages = [...messages, message];
   });
 
-  socket.on("disconnected", ({ connectors, name }) => {
-    messages = [...messages, "disconnected: " + name];
+  socket.on("connected", ({ name }) => {
+    messages = [...messages, `============= connected: ${name} =============`];
   });
 
-  function sendMessage(name, message) {
-    socket.emit("message", { name, message });
+  socket.on("disconnected", ({ name }) => {
+    messages = [
+      ...messages,
+      `============= disconnected: ${name} =============`,
+    ];
+  });
+
+  function sendMessage() {
+    socket.emit("message", message);
     resetMessage();
   }
 
@@ -35,11 +42,13 @@
         goto("/first");
       }
     });
+
+    socket.emit("init", { name: $name });
   });
 </script>
 
 <input type="text" bind:value={message} placeholder="chat" />
-<button on:click={sendMessage($name, message)}>Send</button>
+<button on:click={sendMessage}>Send</button>
 <ul>
   {#each messages as msg}
     <li>{msg}</li>

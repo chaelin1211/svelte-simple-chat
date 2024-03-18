@@ -1,6 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { name } from "../../store.js";
+  import { onMount } from "svelte";
 
   let input = "";
 
@@ -9,6 +10,10 @@
     name.set(input);
     goto("/");
   }
+
+  onMount(() => {
+    sessionStorage.setItem("userName", "");
+  });
 </script>
 
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">

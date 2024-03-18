@@ -1,6 +1,7 @@
 <script>
   import ioClient from "socket.io-client";
-  import { writable } from "svelte/store";
+  import { name } from "../store.js";
+  import { goto } from "$app/navigation";
   import { onMount } from "svelte";
 
   const ENDPOINT = "http://localhost:3000";
@@ -8,7 +9,6 @@
   const socket = ioClient(ENDPOINT);
 
   let message = "";
-  let name = "";
   let messages = [];
 
   socket.on("message", (message) => {
@@ -23,11 +23,19 @@
   function sendMessage(name, message) {
     socket.emit("message", { name, message });
   }
+
+  onMount(() => {
+    name.subscribe((value) => {
+      if (!value || value === "") {
+        alert("이름을 입력하세요");
+        goto("/first");
+      }
+    });
+  });
 </script>
 
-<input type="text" bind:value={name} placeholder="name" />
 <input type="text" bind:value={message} placeholder="chat" />
-<button on:click={sendMessage(name, message)}>Send</button>
+<button on:click={sendMessage($name, message)}>Send</button>
 <ul>
   {#each messages as msg}
     <li>{msg}</li>

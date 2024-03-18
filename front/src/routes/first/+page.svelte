@@ -1,9 +1,12 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
+  import { name } from "../../store.js";
 
-  let name = "";
+  let input = "";
 
-  function enterChat(name: string) {
+  function enterChat(input: string) {
+    sessionStorage.setItem("userName", input);
+    name.set(input);
     goto("/");
   }
 </script>
@@ -25,7 +28,7 @@
         >
         <div class="mt-2">
           <input
-            bind:value={name}
+            bind:value={input}
             id="name"
             name="name"
             type="text"
@@ -36,7 +39,7 @@
       </div>
       <div>
         <button
-          on:click={enterChat(name)}
+          on:click={() => enterChat(input)}
           class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >Enter
         </button>

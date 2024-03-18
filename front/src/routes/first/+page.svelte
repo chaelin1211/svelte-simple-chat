@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
 
   let name = "";
+
   function enterChat(name: string) {
     goto("/");
   }
@@ -19,12 +20,13 @@
     <div class="p-10 space-y-6" action="#" method="POST">
       <div>
         <label
-          for="email"
+          for="name"
           class="block text-sm font-medium leading-6 text-gray-900">name</label
         >
         <div class="mt-2">
           <input
             bind:value={name}
+            id="name"
             name="name"
             type="text"
             required

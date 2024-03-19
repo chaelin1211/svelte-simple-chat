@@ -19,17 +19,21 @@
     await scrollToBottom(chatElement);
   });
 
-  socket.on("connected", ({ id, name, color }) => {
+  socket.on("connected", async ({ id, name, color }) => {
     idColors[id] = color;
     let message = `🌏<span style="color: ${color}">${name}</span> 님이 입장했습니다🙋‍♀️`;
     messages = [...messages, { message }];
+    await tick();
+    await scrollToBottom(chatElement);
   });
 
-  socket.on("disconnected", ({ id, name }) => {
+  socket.on("disconnected", async ({ id, name }) => {
     let color = idColors[id];
     let message = `🛸<span style="color: ${color}">${name}</span> 님이 떠났습니다👽`;
     delete idColors[id];
     messages = [...messages, { message }];
+    await tick();
+    await scrollToBottom(chatElement);
   });
 
   function sendMessage(e) {

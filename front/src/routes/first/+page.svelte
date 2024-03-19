@@ -8,7 +8,7 @@
   function enterChat(input: string) {
     sessionStorage.setItem("userName", input);
     name.set(input);
-    goto("/");
+    goto("/chat");
   }
 
   onMount(() => {

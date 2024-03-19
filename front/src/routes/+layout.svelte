@@ -40,10 +40,14 @@
       style="word-spacing: -0.2em"
     >
       <pre>now {userCount}</pre>
-      <pre
-        class="cursor-pointer underline"
+      <button
+        type="button"
         on:click={() => openNewTab("https://github.com/chaelin1211")}
-        title="github.com/chaelin1211 (new tab)">@chaelin1211</pre>
+      >
+        <pre
+          class="cursor-pointer underline"
+          title="github.com/chaelin1211 (new tab)">@chaelin1211</pre>
+      </button>
     </div>
     <slot />
   </div>

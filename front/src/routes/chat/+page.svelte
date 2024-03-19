@@ -16,12 +16,12 @@
   });
 
   socket.on("connected", ({name}) => {
-    let message = `============= connected: ${name} =============`;
+    let message = `🌏${name}님이 입장하였습니다🙋‍♀️`;
     messages = [...messages, {message}];
   });
 
   socket.on("disconnected", ({name}) => {
-    let message = `============= disconnected: ${name} =============`;
+    let message = `🛸${name}님이 떠났습니다👽`;
     messages = [...messages, {message}];
   });
 

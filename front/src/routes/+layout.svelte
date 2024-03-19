@@ -7,9 +7,10 @@
             <h2
                     class="my-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"
             >
-                Simple Web Chat 🤐
+                ChatterBox👻
             </h2>
         </div>
+        <pre class="text-right">@chaelin1211</pre>
         <slot/>
     </div>
 </div>

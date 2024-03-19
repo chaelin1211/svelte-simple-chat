@@ -1,3 +1,4 @@
+const { getRandomColor } = require("./color.cjs");
 const express = require("express");
 const socketIo = require("socket.io");
 const cors = require("cors");
@@ -22,19 +23,20 @@ const users = {};
 io.on("connection", (socket) => {
   socket.on("init", ({ name }) => {
     users[socket.id] = name;
+
     if (!!name) {
-      io.emit("connected", { name });
+      io.emit("connected", { id: socket.id, name, color: getRandomColor() });
     }
   });
 
   socket.on("message", (message) => {
-    io.emit("message", { name: users[socket.id], message });
+    io.emit("message", { id: socket.id, name: users[socket.id], message });
   });
 
   socket.on("disconnect", () => {
     let name = users[socket.id];
     if (!!name) {
-      io.emit("disconnected", { name });
+      io.emit("disconnected", { id: socket.id, name });
     }
   });
 });

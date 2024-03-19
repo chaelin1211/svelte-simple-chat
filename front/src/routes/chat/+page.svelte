@@ -1,16 +1,13 @@
 <script lang="ts">
-  import ioClient from "socket.io-client";
   import { name } from "../../store.js";
   import { goto } from "$app/navigation";
   import { onMount, tick } from "svelte";
+  import { socket } from "$lib/socket.js";
 
   let message = "";
   let messages = [];
   let chatElement;
   let idColors = {};
-
-  const ENDPOINT = "http://localhost:3000";
-  const socket = ioClient(ENDPOINT);
 
   socket.on("message", async ({ id, name, message }) => {
     messages = [...messages, { id, color: idColors[id], name, message }];

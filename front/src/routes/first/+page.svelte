@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
-  import { name } from "../../store.js";
-  import { onMount } from "svelte";
+  import {goto} from "$app/navigation";
+  import {name} from "../../store.js";
+  import {onMount} from "svelte";
 
   let input = "";
 
-  function enterChat(input: string) {
+  function enterChat(e, input: string) {
+    e.preventDefault();
     sessionStorage.setItem("userName", input);
     name.set(input);
     goto("/chat");
@@ -25,7 +26,7 @@
         Simple Web Chat 🤐
       </h2>
     </div>
-    <div class="p-10 space-y-6">
+    <form class="p-10 space-y-6" on:submit={(e) => enterChat(e, input)}>
       <div>
         <label
           for="name"
@@ -44,11 +45,11 @@
       </div>
       <div>
         <button
-          on:click={() => enterChat(input)}
+          type="submit"
           class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >Enter
         </button>
       </div>
-    </div>
+    </form>
   </div>
 </div>

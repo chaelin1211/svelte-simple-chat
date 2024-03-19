@@ -20,7 +20,6 @@
   });
 
   socket.on("connected", ({ id, name, color }) => {
-    console.log(`${name}, ${color}`);
     idColors[id] = color;
     let message = `🌏<span style="color: ${color}">${name}</span> 님이 입장했습니다🙋‍♀️`;
     messages = [...messages, { message }];
@@ -61,7 +60,7 @@
 
 <div
   bind:this={chatElement}
-  class="bg-black text-white rounded-md p-2 mb-2 h-80 justify-end overflow-y-auto scrollbar-hide break-words text-sm"
+  class="bg-black text-white rounded-md p-2 mb-2 h-80 justify-end overflow-y-auto scrollbar-hide break-words text-xs"
 >
   {#each messages as { name, color, message }}
     {#if !!name}
@@ -82,6 +81,7 @@
     placeholder="send ..."
   />
   <button
+    title="입력"
     type="submit"
     class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center me-2 -rotate-90"
   >

@@ -16,7 +16,8 @@
     sessionStorage.setItem("userName", "");
   });
 </script>
-<form class="p-10 space-y-6" on:submit={(e) => enterChat(e, input)}>
+
+<form class="py-10 space-y-6" on:submit={(e) => enterChat(e, input)}>
   <div>
     <div class="mt-2">
       <input
@@ -32,9 +33,10 @@
   </div>
   <div>
     <button
-            type="submit"
-            class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-    >Enter
+      title="입장"
+      type="submit"
+      class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+      >Enter
     </button>
   </div>
 </form>

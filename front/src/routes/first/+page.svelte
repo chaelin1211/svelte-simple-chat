@@ -1,7 +1,8 @@
 <script lang="ts">
-  import {goto} from "$app/navigation";
-  import {name} from "../../store.js";
-  import {onMount} from "svelte";
+  import { goto } from "$app/navigation";
+  import { name } from "../../store.js";
+  import { onMount } from "svelte";
+  import { socket } from "$lib/socket.js";
 
   let input = "";
 
@@ -13,6 +14,7 @@
   }
 
   onMount(() => {
+    socket.emit("leave");
     sessionStorage.setItem("userName", "");
   });
 </script>
@@ -21,13 +23,13 @@
   <div>
     <div class="mt-2">
       <input
-              bind:value={input}
-              id="name"
-              name="name"
-              type="text"
-              placeholder="name"
-              required
-              class="block w-full rounded-md outline-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-400 sm:text-sm sm:leading-6"
+        bind:value={input}
+        id="name"
+        name="name"
+        type="text"
+        placeholder="name"
+        required
+        class="block w-full rounded-md outline-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-400 sm:text-sm sm:leading-6"
       />
     </div>
   </div>

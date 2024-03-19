@@ -25,7 +25,12 @@ io.on("connection", (socket) => {
     users[socket.id] = name;
 
     if (!!name) {
-      io.emit("connected", { id: socket.id, name, color: getRandomColor() });
+      io.emit("connected", {
+        id: socket.id,
+        name,
+        color: getRandomColor(),
+        count: Object.keys(users)?.length,
+      });
     }
   });
 
@@ -33,10 +38,33 @@ io.on("connection", (socket) => {
     io.emit("message", { id: socket.id, name: users[socket.id], message });
   });
 
-  socket.on("disconnect", () => {
+  socket.on("leave", () => {
     let name = users[socket.id];
+    delete users[socket.id];
     if (!!name) {
-      io.emit("disconnected", { id: socket.id, name });
+      io.emit("disconnected", {
+        id: socket.id,
+        name,
+        count: Object.keys(users)?.length,
+      });
     }
   });
+
+  socket.on("disconnect", () => {
+    let name = users[socket.id];
+    delete users[socket.id];
+    if (!!name) {
+      io.emit("disconnected", {
+        id: socket.id,
+        name,
+        count: Object.keys(users)?.length,
+      });
+    }
+  });
+});
+
+app.get("/user-count", (req, res) => {
+  // res.send(Object.keys(users)?.length);
+  let count = Object.keys(users)?.length;
+  res.status(200).send({ count });
 });

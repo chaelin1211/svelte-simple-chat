@@ -47,7 +47,7 @@
   });
 </script>
 
-<div class="bg-black text-white rounded-md p-2 mb-2 h-80 justify-end overflow-y-auto scrollbar-hide break-words">
+<div class="bg-black text-white rounded-md p-2 mb-2 h-80 justify-end overflow-y-auto scrollbar-hide break-words text-sm">
     {#each messages as {name, message}}
         {#if !!name}
             <p><span class="text-red-200">{name}</span>{`: ${message}`}</p>
@@ -57,7 +57,7 @@
     {/each}
 </div>
 <form on:submit={(e) => sendMessage(e)} class="flex space-x-2">
-    <input class="block w-full rounded-full ring-1 ring-gray-400 py-0.5 px-3 focus:ring-2 focus:ring-blue-400 outline-0"  type="text" bind:value={message} placeholder="chat"/>
+    <input class="block w-full rounded-full ring-1 text-gray-900 ring-gray-300 placeholder:text-gray-400 py-0.5 px-3 focus:ring-2 focus:ring-blue-400 outline-0 sm:text-sm sm:leading-6" type="text" bind:value={message} placeholder="send ..."/>
     <button type="submit" class="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center me-2 -rotate-90">
         <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>

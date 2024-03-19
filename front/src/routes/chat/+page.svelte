@@ -2,7 +2,7 @@
   import ioClient from "socket.io-client";
   import {name} from "../../store.js";
   import {goto} from "$app/navigation";
-  import {onMount} from "svelte";
+  import {onMount, tick} from "svelte";
 
   const ENDPOINT = "http://localhost:3000";
 
@@ -10,9 +10,13 @@
 
   let message = "";
   let messages = [];
+  let chatElement;
 
-  socket.on("message", ({name, message}) => {
+  socket.on("message", async ({name, message}) => {
     messages = [...messages, {name, message}];
+    // UI 업데이트 사이클이 끝나고 나서 작업을 실행하기 위해 tick 사용
+    await tick();
+    await scrollToBottom(chatElement);
   });
 
   socket.on("connected", ({name}) => {
@@ -34,6 +38,9 @@
   function resetMessage() {
     message = "";
   }
+  const scrollToBottom = async (node) => {
+    node.scroll({ top: node.scrollHeight, behavior: 'smooth' });
+  };
 
   onMount(() => {
     name.subscribe((value) => {
@@ -47,7 +54,7 @@
   });
 </script>
 
-<div class="bg-black text-white rounded-md p-2 mb-2 h-80 justify-end overflow-y-auto scrollbar-hide break-words text-sm">
+<div bind:this={chatElement} class="bg-black text-white rounded-md p-2 mb-2 h-80 justify-end overflow-y-auto scrollbar-hide break-words text-sm">
     {#each messages as {name, message}}
         {#if !!name}
             <p><span class="text-red-200">{name}</span>{`: ${message}`}</p>
@@ -64,5 +71,4 @@
         </svg>
         <span class="sr-only">Icon description</span>
     </button>
-
 </form>

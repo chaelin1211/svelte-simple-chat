@@ -28,7 +28,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("message", (message) => {
-    io.emit("message", users[socket.id] + ": " + message);
+    io.emit("message", { name: users[socket.id], message });
   });
 
   socket.on("disconnect", () => {

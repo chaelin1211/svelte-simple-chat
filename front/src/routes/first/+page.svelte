@@ -25,7 +25,7 @@
         Simple Web Chat 🤐
       </h2>
     </div>
-    <div class="p-10 space-y-6" action="#" method="POST">
+    <div class="p-10 space-y-6">
       <div>
         <label
           for="name"

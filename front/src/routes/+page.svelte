@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
   import ioClient from "socket.io-client";
-  import {name} from "../store.js";
-  import {goto} from "$app/navigation";
-  import {onMount} from "svelte";
+  import { name } from "../store.js";
+  import { goto } from "$app/navigation";
+  import { onMount } from "svelte";
 
   const ENDPOINT = "http://localhost:3000";
 

@@ -3,7 +3,7 @@ const colToHex = (c) => {
   // Hack so colors are bright enough
   let color = c < 75 ? c + 75 : c;
   let hex = color.toString(16);
-  return hex.length == 1 ? "0" + hex : hex;
+  return hex.length === 1 ? "0" + hex : hex;
 };
 
 // uses colToHex to concatenate

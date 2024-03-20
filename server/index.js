@@ -3,12 +3,14 @@ const express = require("express");
 const socketIo = require("socket.io");
 const cors = require("cors");
 
+require("dotenv").config();
+
 const app = express();
 
 // Apply CORS middleware globally
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONT_URL,
     // credentials: true // Enable cookies if needed
   }),
 );
@@ -17,7 +19,7 @@ const server = app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
 
-const io = socketIo(server, { cors: { origin: "http://localhost:5173" } }); // Set CORS for Socket.IO
+const io = socketIo(server, { cors: { origin: process.env.FRONT_URL } }); // Set CORS for Socket.IO
 
 const users = {};
 io.on("connection", (socket) => {

@@ -2,6 +2,7 @@
   import "$lib/app.css";
   import { socket } from "$lib/socket.js";
   import { onMount } from "svelte";
+  import { PUBLIC_SERVER } from "$env/static/public";
 
   function openNewTab(url) {
     window.open(url, "_blank");
@@ -16,7 +17,7 @@
   });
 
   onMount(async () => {
-    const response = await fetch("http://localhost:3000/user-count");
+    const response = await fetch(PUBLIC_SERVER + "/user-count");
     if (response.ok) {
       const data = await response.json();
       userCount = data.count;

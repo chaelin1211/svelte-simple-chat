@@ -68,3 +68,5 @@ app.get("/user-count", (req, res) => {
   let count = Object.keys(users)?.length;
   res.status(200).send({ count });
 });
+
+module.exports = app;

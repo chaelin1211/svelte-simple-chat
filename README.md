@@ -79,12 +79,10 @@ server, front 각각 하나씩 .env 파일이 필요하며 필드명과 내용�
     npm run dev
     ```
     
-4. http://localhost:5173 접속
-    1. 접속 후 이름을 입력 → ENTER
-        
-        ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/cbe3ff75-34b5-4712-9ee3-087558f3acd4/d9348d3a-23f0-4369-a2b6-b9e7452f854b/Untitled.png)
-        
-        ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/cbe3ff75-34b5-4712-9ee3-087558f3acd4/bb4a02d5-f8f9-4c77-a802-e962f3c813f9/Untitled.png)
+4. http://localhost:5173 접속 / 이름 입력 → ENTER
+        ![image](https://github.com/chaelin1211/svelte-simple-chat/assets/48509225/6be7779e-5873-441e-a831-86b0a092ed92)
+        ![image](https://github.com/chaelin1211/svelte-simple-chat/assets/48509225/399f339a-5d70-4bde-a222-f086a06fb445)
+
         
 
 ### 오류 발생 시

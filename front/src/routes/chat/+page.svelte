@@ -7,27 +7,23 @@
   let message = "";
   let messages = [];
   let chatElement;
-  let idColors = {};
 
-  socket.on("message", async ({ id, name, message }) => {
-    messages = [...messages, { id, color: idColors[id], name, message }];
+  socket.on("message", async ({ id, name, color, message }) => {
+    messages = [...messages, { id, color, name, message }];
     // UI 업데이트 사이클이 끝나고 나서 작업을 실행하기 위해 tick 사용
     await tick();
     await scrollToBottom(chatElement);
   });
 
   socket.on("connected", async ({ id, name, color }) => {
-    idColors[id] = color;
     let message = `🌏<span style="color: ${color}">${name}</span> 님이 입장했습니다🙋‍♀️`;
     messages = [...messages, { message }];
     await tick();
     await scrollToBottom(chatElement);
   });
 
-  socket.on("disconnected", async ({ id, name }) => {
-    let color = idColors[id];
+  socket.on("disconnected", async ({ id, name, color }) => {
     let message = `🛸<span style="color: ${color}">${name}</span> 님이 떠났습니다👽`;
-    delete idColors[id];
     messages = [...messages, { message }];
     await tick();
     await scrollToBottom(chatElement);

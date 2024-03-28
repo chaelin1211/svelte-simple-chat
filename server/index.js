@@ -24,45 +24,40 @@ const io = socketIo(server, { cors: { origin: process.env.FRONT_URL } }); // Set
 const users = {};
 io.on("connection", (socket) => {
   socket.on("init", ({ name }) => {
-    users[socket.id] = name;
+    const color = getRandomColor();
+    users[socket.id] = {name, color};
 
     if (!!name) {
       io.emit("connected", {
         id: socket.id,
         name,
-        color: getRandomColor(),
+        color,
         count: Object.keys(users)?.length,
       });
     }
   });
 
   socket.on("message", (message) => {
-    io.emit("message", { id: socket.id, name: users[socket.id], message });
+    io.emit("message", { id: socket.id, ...users[socket.id], message });
   });
 
-  socket.on("leave", () => {
-    let name = users[socket.id];
+  socket.on("leave", () => disconnectUser());
+
+  socket.on("disconnect", () => disconnectUser());
+
+  const disconnectUser = () => {
+    let name = users[socket.id]?.name;
+    let color = users[socket.id]?.color;
     delete users[socket.id];
     if (!!name) {
       io.emit("disconnected", {
         id: socket.id,
         name,
+        color,
         count: Object.keys(users)?.length,
       });
     }
-  });
-
-  socket.on("disconnect", () => {
-    let name = users[socket.id];
-    delete users[socket.id];
-    if (!!name) {
-      io.emit("disconnected", {
-        id: socket.id,
-        name,
-        count: Object.keys(users)?.length,
-      });
-    }
-  });
+  }
 });
 
 app.get("/user-count", (req, res) => {

@@ -2,12 +2,11 @@
   import { goto } from "$app/navigation";
   import { name, roomCode } from "../../store.js";
   import { onMount } from "svelte";
-  import { socket } from "$lib/socket.js";
+  import { v4 as uuidv4 } from "uuid";
 
   let input = "";
-  let code = 1;
 
-  function enterChat(e, input: string, code) {
+  function enterChat(e, input: string, code = "ALL") {
     e.preventDefault();
     sessionStorage.setItem("userName", input);
     name.set(input);
@@ -15,12 +14,16 @@
     goto("/chat");
   }
 
+  function createNewRoom(e, input) {
+    enterChat(e, input, uuidv4());
+  }
+
   onMount(() => {
     sessionStorage.setItem("userName", "");
   });
 </script>
 
-<form class="py-10 space-y-6" on:submit={(e) => enterChat(e, input, code)}>
+<form class="py-10 space-y-6" on:submit={(e) => enterChat(e, input)}>
   <div>
     <div class="mt-2">
       <input
@@ -36,18 +39,19 @@
   </div>
   <div>
     <button
-      title="입장"
+      title="모든 사람 만나기"
       type="submit"
       class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-      >Enter
+      >모든 사람 만나기
     </button>
   </div>
   <div>
     <button
-      title="채팅방"
+      title="나만의 방 만들기"
       type="button"
+      on:click={(e) => createNewRoom(e, input)}
       class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-      >채팅방
+      >나만의 방 만들기
     </button>
   </div>
 </form>

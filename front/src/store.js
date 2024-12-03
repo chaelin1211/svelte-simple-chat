@@ -7,3 +7,4 @@ const sessionValue = (name) => {
 };
 
 export const name = writable(sessionValue("userName") || "");
+export const roomCode = writable();

@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { name } from "../../store.js";
+  import { name, roomCode } from "../../store.js";
   import { goto } from "$app/navigation";
-  import { onMount, tick } from "svelte";
+  import { onDestroy, onMount, tick } from "svelte";
   import { socket } from "$lib/socket.js";
 
   let message = "";
   let messages = [];
   let chatElement;
+  let roomCount = 0;
 
   socket.on("message", async ({ id, name, color, message }) => {
     messages = [...messages, { id, color, name, message }];
@@ -15,23 +16,25 @@
     await scrollToBottom(chatElement);
   });
 
-  socket.on("connected", async ({ id, name, color }) => {
+  socket.on("connected", async ({ name, roomSize, color }) => {
     let message = `🌏<span style="color: ${color}">${name}</span> 님이 입장했습니다🙋‍♀️`;
     messages = [...messages, { message }];
+    roomCount = roomSize;
     await tick();
     await scrollToBottom(chatElement);
   });
 
-  socket.on("disconnected", async ({ id, name, color }) => {
+  socket.on("disconnected room", async ({ name, color, roomSize }) => {
     let message = `🛸<span style="color: ${color}">${name}</span> 님이 떠났습니다👽`;
     messages = [...messages, { message }];
+    roomCount = roomSize;
     await tick();
     await scrollToBottom(chatElement);
   });
 
   function sendMessage(e) {
     e.preventDefault();
-    socket.emit("message", message);
+    socket.emit("message", { message, code: $roomCode });
     resetMessage();
   }
 
@@ -51,9 +54,20 @@
       }
     });
 
-    socket.emit("init", { name: $name });
+    console.log("join chat");
+    socket.emit("join", { name: $name, code: $roomCode });
+  });
+
+  onDestroy(() => {
+    console.log("leave chat");
+    socket.emit("leave");
+    roomCode.set(undefined);
   });
 </script>
+
+{#if !!$roomCode}
+  <div>Code: {$roomCode}, now {roomCount} in this room</div>
+{/if}
 
 <div
   bind:this={chatElement}

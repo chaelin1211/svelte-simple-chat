@@ -23,41 +23,79 @@ const io = socketIo(server, { cors: { origin: process.env.FRONT_URL } }); // Set
 
 const users = {};
 io.on("connection", (socket) => {
-  socket.on("init", ({ name }) => {
+  socket.on("join", ({ name, code }) => {
+    socket.join(code);
+    console.log(`${name} join Room: ${code}`);
+
     const color = getRandomColor();
-    users[socket.id] = {name, color};
+    users[socket.id] = { name, color };
 
     if (!!name) {
+      const roomSize = io.sockets.adapter.rooms.get(code)?.size || 0;
+
       io.emit("connected", {
         id: socket.id,
+        code,
         name,
         color,
-        count: Object.keys(users)?.length,
+        count: Object.keys(users)?.length ?? 0,
+        roomSize,
       });
     }
   });
 
-  socket.on("message", (message) => {
-    io.emit("message", { id: socket.id, ...users[socket.id], message });
+  socket.on("message", ({ message, code }) => {
+    io.to(code).emit("message", {
+      id: socket.id,
+      ...users[socket.id],
+      message,
+    });
   });
 
-  socket.on("leave", () => disconnectUser());
+  // 페이지 이동 시
+  socket.on("leave", () => {
+    console.log(`${socket.id} leave Room`);
+    disconnectUser();
+  });
 
-  socket.on("disconnect", () => disconnectUser());
+  // 페이지 종료 시
+  socket.on("disconnecting", () => {
+    console.log(`${socket.id} disconnecting Room`);
+    disconnectUser();
+  });
 
   const disconnectUser = () => {
-    let name = users[socket.id]?.name;
-    let color = users[socket.id]?.color;
+    if (!users[socket.id]) return;
+
+    const name = users[socket.id]?.name;
+    console.log(`${name} leave Room`);
+
     delete users[socket.id];
-    if (!!name) {
-      io.emit("disconnected", {
-        id: socket.id,
-        name,
-        color,
-        count: Object.keys(users)?.length,
-      });
+
+    const roomSize = socket.rooms?.size - 1;
+    const count = Object.keys(users)?.length ?? 0;
+
+    // 전체 count
+    io.emit("disconnected", {
+      count,
+    });
+
+    // 방에 있는 다른 사용자에게 퇴장 알림
+    if (roomSize > 0) {
+      const color = users[socket.id]?.color;
+
+      for (const room of socket.rooms) {
+        if (room !== socket.id) {
+          socket.to(room).emit("disconnected room", {
+            name,
+            color,
+            count,
+            roomSize,
+          });
+        }
+      }
     }
-  }
+  };
 });
 
 app.get("/user-count", (req, res) => {

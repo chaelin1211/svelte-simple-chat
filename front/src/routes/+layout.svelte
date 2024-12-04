@@ -4,6 +4,8 @@
   import { confirmState, modalState } from "../store.js";
   import Modal from "../components/Modal.svelte";
   import Confirm from "../components/Confirm.svelte";
+  import { onMount } from "svelte";
+  import { PUBLIC_SERVER } from "$env/static/public";
 
   function openNewTab(url) {
     window.open(url, "_blank");
@@ -13,8 +15,17 @@
   socket.on("connected", ({ count }) => {
     userCount = count;
   });
+
   socket.on("disconnected", ({ count }) => {
     userCount = count;
+  });
+
+  onMount(async () => {
+    const response = await fetch(PUBLIC_SERVER + "/user-count");
+    if (response.ok) {
+      const data = await response.json();
+      userCount = data.count;
+    }
   });
 </script>
 

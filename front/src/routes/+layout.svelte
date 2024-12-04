@@ -1,8 +1,9 @@
 <script>
   import "$lib/app.css";
   import { socket } from "$lib/socket.js";
-  import { onMount } from "svelte";
-  import { PUBLIC_SERVER } from "$env/static/public";
+  import { confirmState, modalState } from "../store.js";
+  import Modal from "../components/Modal.svelte";
+  import Confirm from "../components/Confirm.svelte";
 
   function openNewTab(url) {
     window.open(url, "_blank");
@@ -14,14 +15,6 @@
   });
   socket.on("disconnected", ({ count }) => {
     userCount = count;
-  });
-
-  onMount(async () => {
-    const response = await fetch(PUBLIC_SERVER + "/user-count");
-    if (response.ok) {
-      const data = await response.json();
-      userCount = data.count;
-    }
   });
 </script>
 
@@ -51,5 +44,15 @@
       </button>
     </div>
     <slot />
+    <Confirm
+      bind:isOpen={$confirmState.isOpen}
+      content={$confirmState.content}
+      on:callback={$confirmState.callback}
+    />
+    <Modal
+      bind:isOpen={$modalState.isOpen}
+      content={$modalState.content}
+      on:callback={$modalState.callback}
+    />
   </div>
 </div>

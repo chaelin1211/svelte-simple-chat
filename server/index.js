@@ -115,4 +115,13 @@ app.get("/user-count", (req, res) => {
   res.status(200).send({ count });
 });
 
+app.get("/room-check", (req, res) => {
+  const roomIdInput = req?.query?.roomId;
+
+  let selectedRoom = rooms[roomIdInput];
+  let result = true;
+  if (!selectedRoom || selectedRoom.length === 0) result = false;
+  res.status(200).send({ result });
+});
+
 module.exports = app;

@@ -22,10 +22,15 @@ const server = app.listen(3000, () => {
 const io = socketIo(server, { cors: { origin: process.env.FRONT_URL } }); // Set CORS for Socket.IO
 
 const users = {};
+const rooms = {};
+
 io.on("connection", (socket) => {
   socket.on("join", ({ name, code }) => {
+    if (!rooms[code]) rooms[code] = [];
+
     socket.join(code);
-    console.log(`${name} join Room: ${code}`);
+    rooms[code].push(socket.id);
+    console.log(`${name} join Room [${code}]`);
 
     const color = getRandomColor();
     users[socket.id] = { name, color };
@@ -33,7 +38,7 @@ io.on("connection", (socket) => {
     if (!!name) {
       const roomSize = io.sockets.adapter.rooms.get(code)?.size || 0;
 
-      io.emit("connected", {
+      io.to(code).emit("connected", {
         id: socket.id,
         code,
         name,
@@ -54,13 +59,11 @@ io.on("connection", (socket) => {
 
   // 페이지 이동 시
   socket.on("leave", () => {
-    console.log(`${socket.id} leave Room`);
     disconnectUser();
   });
 
   // 페이지 종료 시
   socket.on("disconnecting", () => {
-    console.log(`${socket.id} disconnecting Room`);
     disconnectUser();
   });
 
@@ -72,7 +75,6 @@ io.on("connection", (socket) => {
 
     delete users[socket.id];
 
-    const roomSize = socket.rooms?.size - 1;
     const count = Object.keys(users)?.length ?? 0;
 
     // 전체 count
@@ -81,18 +83,27 @@ io.on("connection", (socket) => {
     });
 
     // 방에 있는 다른 사용자에게 퇴장 알림
-    if (roomSize > 0) {
-      const color = users[socket.id]?.color;
 
-      for (const room of socket.rooms) {
-        if (room !== socket.id) {
-          socket.to(room).emit("disconnected room", {
-            name,
-            color,
-            count,
-            roomSize,
-          });
+    const color = users[socket.id]?.color;
+
+    // 속한 모든 room
+    for (const room of socket.rooms) {
+      if (room !== socket.id) {
+        rooms[room] = rooms[room]?.filter((id) => id !== socket.id);
+
+        let roomSize = rooms[room]?.length;
+        if (roomSize === 0) {
+          console.log(`!Room [${room}] Close!`);
+          delete rooms[room];
         }
+
+        // 본인을 제외한 room에 속한 모든 client에게
+        socket.to(room).emit("disconnected room", {
+          name,
+          color,
+          count,
+          roomSize,
+        });
       }
     }
   };

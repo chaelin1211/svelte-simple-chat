@@ -1,15 +1,18 @@
 <script>
+  import { closeConfirm } from "../store.js";
+  import { createEventDispatcher } from "svelte";
+
   export let isOpen = false;
   export let title = ""; // 모달 제목
   export let content = "";
 
-  // 확인 이벤트
-  export let callback = () => {};
+  const dispatch = createEventDispatcher();
 
-  // 취소 이벤트
-  const closeConfirm = () => {
+  // 확인 이벤트
+  function callback() {
+    dispatch("callback");
     closeConfirm();
-  };
+  }
 </script>
 
 {#if isOpen}
@@ -24,7 +27,7 @@
       </main>
       <footer class="modal-footer">
         <button on:click={callback}>확인</button>
-        <button on:click={closeConfirm}>Close</button>
+        <button on:click={closeConfirm}>close</button>
       </footer>
     </div>
   </div>

@@ -1,12 +1,18 @@
 <script>
   import { closeModal } from "../store.js";
+  import { createEventDispatcher } from "svelte";
 
   export let isOpen = false; // 모달 열림 여부
   export let title = ""; // 모달 제목
   export let content = ""; // 모달 내용
 
+  const dispatch = createEventDispatcher();
+
   // 확인 이벤트
-  export let callback = closeModal;
+  function callback() {
+    dispatch("callback");
+    closeModal();
+  }
 </script>
 
 {#if isOpen}

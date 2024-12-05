@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import { v4 as uuidv4 } from "uuid";
   import { PUBLIC_SERVER } from "$env/static/public";
+  import ModalPopup from "../../components/ModalPopup.svelte";
 
   let nickNameInput = "";
   let roomCodeInput = "";
@@ -91,16 +92,16 @@
   </div>
   <div>
     <button
-      title="기존 방 들어가기"
+      title="초대 입장"
       type="button"
       on:click={() => roomInputOpen(nickNameInput)}
       class="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-      >기존 방 들어가기
+      >초대 입장
     </button>
   </div>
 </form>
 
-{#if roomCodeModalShow}
+<ModalPopup bind:isOpen={roomCodeModalShow} title="초대 코드 입력">
   <div>
     <div>
       <div class="mt-2">
@@ -131,4 +132,4 @@
       </div>
     </div>
   </div>
-{/if}
+</ModalPopup>

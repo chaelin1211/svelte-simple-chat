@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { name, roomCode } from "../../store.js";
+  import { name, openModal, roomCode } from "../../store.js";
   import { goto } from "$app/navigation";
   import { onDestroy, onMount, tick } from "svelte";
   import { socket } from "$lib/socket.js";
@@ -49,8 +49,9 @@
   onMount(() => {
     name.subscribe((value) => {
       if (!value || value === "") {
-        alert("이름을 입력하세요");
-        goto("/first");
+        openModal("세션 만료", () => {
+          goto("/first");
+        });
       }
     });
 
@@ -65,7 +66,7 @@
   });
 </script>
 
-{#if !!$roomCode}
+{#if $roomCode !== "ALL"}
   <div>Code: {$roomCode}, now {roomCount} in this room</div>
 {/if}
 

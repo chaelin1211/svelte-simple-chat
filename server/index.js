@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
 
     socket.join(code);
     rooms[code].push(socket.id);
-    console.log(`${name} join Room [${code}]`);
+    console.log(`JOIN ROOM: ${name} >>> [${code}]`);
 
     const color = getRandomColor();
     users[socket.id] = { name, color };
@@ -71,8 +71,6 @@ io.on("connection", (socket) => {
     if (!users[socket.id]) return;
 
     const name = users[socket.id]?.name;
-    console.log(`${name} leave Room`);
-
     delete users[socket.id];
 
     const count = Object.keys(users)?.length ?? 0;
@@ -93,11 +91,12 @@ io.on("connection", (socket) => {
 
         let roomSize = rooms[room]?.length;
         if (roomSize === 0) {
-          console.log(`!Room [${room}] Close!`);
+          console.log(`CLOSE ROOM: [${room}]`);
           delete rooms[room];
         }
 
         // 본인을 제외한 room에 속한 모든 client에게
+        console.log(`LEAVE ROOM: ${name} >>> [${room}]`);
         socket.to(room).emit("disconnected room", {
           name,
           color,

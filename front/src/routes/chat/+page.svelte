@@ -46,23 +46,33 @@
     !!node && node.scroll({ top: node.scrollHeight, behavior: "smooth" });
   };
 
-  onMount(() => {
-    name.subscribe((value) => {
-      if (!value || value === "") {
-        openModal("세션 만료", () => {
-          goto("/first");
-        });
-      }
-    });
+  function checkRequiredStore(value) {
+    if (!value || value === "") {
+      goto("/first");
+    }
+  }
 
-    console.log("join chat");
+  onMount(() => {
+    name.subscribe((value) => checkRequiredStore(value));
+    roomCode.subscribe((value) => checkRequiredStore(value));
+
     socket.emit("join", { name: $name, code: $roomCode });
+
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   });
 
   onDestroy(() => {
-    console.log("leave chat");
     socket.emit("leave");
-    roomCode.set(undefined);
+    name.set("");
   });
 </script>
 
